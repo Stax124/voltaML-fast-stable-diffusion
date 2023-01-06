@@ -1,10 +1,13 @@
-from typing import Dict
-import torch
-from core.inference.pytorch import PyTorchInferenceModel
 import gc
-from core.types import SupportedModel, Txt2ImgQueueEntry
-from core.inference.volta_accelerate import DemoDiffusion
+import os
 import time
+from typing import Dict, Union
+
+import torch
+
+from core.inference.pytorch import PyTorchInferenceModel
+from core.inference.volta_accelerate import DemoDiffusion
+from core.types import SupportedModel, Txt2ImgQueueEntry
 
 
 class ModelHandler:
@@ -20,9 +23,9 @@ class ModelHandler:
                 self.generated_models[job.model] = DemoDiffusion(
                     model_path=job.model.value,
                     denoising_steps=50,
-                    denoising_fp16="fp16",
+                    denoising_fp16=True,
                     scheduler="LMSD",
-                    hf_token="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",
+                    hf_token=os.environ.get("HUGGINGFACE_TOKEN"),
                     verbose=False,
                     nvtx_profile=False,
                     max_batch_size=16

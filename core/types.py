@@ -28,6 +28,12 @@ class SupportedModel(Enum):
     AnythingV3 = "Linaqruf/anything-v3.0"
     StableDiffusion1_5 = "runwayml/stable-diffusion-v1-5"
     StableDiffusion1_4 = "CompVis/stable-diffusion-v1-4"
+    Analog = "wavymulder/Analog-Diffusion"
+    Redshift = "nitrosocke/redshift-diffusion"
+    Arcane = "nitrosocke/Arcane-Diffusion"
+    Archer = "nitrosocke/archer-diffusion"
+    EimisAnime = "eimiss/EimisAnimeDiffusion_1.0v"
+    EimisRealistic = "eimiss/EimisSemiRealistic"
     
 @dataclass
 class Txt2ImgQueueEntry:
