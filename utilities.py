@@ -16,21 +16,23 @@
 # limitations under the License.
 #
 
+import os
+import random
 from collections import OrderedDict
 from copy import copy
+from typing import List
+
 import numpy as np
-import os
-import math
-from PIL import Image
-from polygraphy.backend.common import bytes_from_path
-from polygraphy.backend.trt import CreateConfig, Profile
-from polygraphy.backend.trt import engine_from_bytes, engine_from_network, network_from_onnx_path, save_engine
-from polygraphy.backend.trt import util as trt_util
-from polygraphy import cuda
-import random
-from scipy import integrate
 import tensorrt as trt
 import torch
+from PIL import Image
+from polygraphy import cuda
+from polygraphy.backend.common import bytes_from_path
+from polygraphy.backend.trt import (CreateConfig, Profile, engine_from_bytes,
+                                    engine_from_network,
+                                    network_from_onnx_path, save_engine)
+from polygraphy.backend.trt import util as trt_util
+from scipy import integrate
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 
@@ -535,3 +537,14 @@ def save_image(images, image_path_dir, image_name_prefix):
         image_path  = os.path.join(image_path_dir, image_name_prefix+str(i+1)+'-'+str(random.randint(1000,9999))+'.png')
         print(f"Saving image {i+1} / {images.shape[0]} to: {image_path}")
         Image.fromarray(images[i]).save(image_path)
+
+def convert_tensor_to_images(tensor) -> List[Image.Image]:
+    """
+    Convert a tensor to a PIL image.
+    """
+    split_tensors = ((tensor + 1) * 255 / 2).clamp(0, 255).detach().permute(0, 2, 3, 1).round().type(torch.uint8).cpu().numpy()
+    images = []
+    for i in range(split_tensors.shape[0]):
+        images.append(Image.fromarray(split_tensors[i]))
+    
+    return images

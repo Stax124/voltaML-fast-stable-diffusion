@@ -21,6 +21,19 @@ async def txt2img_job(job: Txt2ImgQueueEntry):
     if job.backend == "PyTorch":
         images, time = await queue.add_job(job)
     elif job.backend == "TensorRT":
+        from volta_accelerate import infer_trt
+        infer_trt(
+            saving_path="static/output/"+str(job.data.id),
+            model=job.model.value,
+            prompt=job.data.prompt,
+            neg_prompt=job.data.negative_prompt,
+            img_height=job.data.height,
+            img_width=job.data.width,
+            num_inference_steps=job.data.steps,
+            guidance_scale=job.data.guidance_scale,
+            num_images_per_prompt=job.data.batch_size,
+            seed=job.data.seed,
+        )
         images, time = list(), 0
         # infer_trt()
     else:

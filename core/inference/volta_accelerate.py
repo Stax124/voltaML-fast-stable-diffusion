@@ -32,8 +32,8 @@ from polygraphy import cuda
 from transformers import CLIPTokenizer
 
 from models import CLIP, VAE, UNet
-from pytorch_model import inference, load_model
-from utilities import TRT_LOGGER, DPMScheduler, Engine, LMSDiscreteScheduler, save_image
+from utilities import (TRT_LOGGER, DPMScheduler, Engine, LMSDiscreteScheduler,
+                       save_image)
 
 
 def parseArgs():

@@ -25,7 +25,6 @@ import uuid
 import numpy as np
 import nvtx
 import onnx
-
 # import tensorrt as trt
 import torch
 import tqdm
@@ -35,7 +34,8 @@ from transformers import CLIPTokenizer
 
 from models import CLIP, VAE, UNet
 from pytorch_model import inference, load_model
-from utilities import TRT_LOGGER, DPMScheduler, Engine, LMSDiscreteScheduler, save_image
+from utilities import (TRT_LOGGER, DPMScheduler, Engine, LMSDiscreteScheduler,
+                       convert_tensor_to_images, save_image)
 
 
 def parseArgs():
@@ -485,6 +485,7 @@ class DemoDiffusion:
         warmup=False,
         verbose=False,
         seed=None,
+        save=True,
         output_dir="static/output",
     ):
         """
@@ -755,8 +756,8 @@ class DemoDiffusion:
                     )
                     + "-"
                 )
-                save_image(images, output_dir, image_name_prefix)
-            return str(e2e_toc - e2e_tic)
+                if save: save_image(images, output_dir, image_name_prefix)
+            return (convert_tensor_to_images(images), e2e_toc - e2e_tic)
 
 
 def compile_trt(
@@ -1130,5 +1131,4 @@ if __name__ == "__main__":
             guidance_scale=12,
             num_images_per_prompt=args.repeat_prompt,
             seed=args.seed,
-        )
         )
